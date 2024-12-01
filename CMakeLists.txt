@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 include_directories(${CMAKE_SOURCE_DIR}/inc)
 
 # Add the executable for the main simulation
-add_executable(Zombies src/main.cpp src/City.cpp src/Human.cpp src/Zombie.cpp src/Organism.cpp)
+add_executable(Zombies src/City.cpp src/Human.cpp src/Zombie.cpp src/Organism.cpp src/main.cpp)
 
 # Add the executables for the tests
 add_executable(HumanTest test/HumanTest.cpp src/City.cpp src/Human.cpp src/Organism.cpp)

@@ -16,6 +16,11 @@ public:
 
     void turn() override; // Implement Zombie's turn logic
     void move();
+
+    void breed();
+
+    void breed() const;
+
     void starve();
 
     char getType() const override { return ZOMBIE_CH; }

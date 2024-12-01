@@ -4,7 +4,7 @@
 #include "../inc/Organism.h"
 #include "../inc/GameSpecs.h"
 
-class Human : public Organism
+class Human final : public Organism
 {
 private:
     int recruitCounter;
@@ -12,7 +12,7 @@ private:
 public:
     Human();
     Human(City *city, int size);
-    virtual ~Human();
+    ~Human() override;
 
     void turn() override; // Implement Human's turn logic
     void move();

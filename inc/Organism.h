@@ -24,7 +24,7 @@ public:
     bool getMoved() const { return moved; }
     void setMoved(const bool moved) { this->moved = moved; }
 
-    friend ostream& operator<<(ostream &output, Organism *organism);
+    friend ostream& operator<<(ostream &output, const Organism *organism);
     virtual char getType() const = 0; // Added pure virtual function to get organism type
     virtual char getChar() const = 0; // Added pure virtual function to get ASCII character
 };
