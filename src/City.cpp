@@ -58,7 +58,6 @@ void City::setOrganism(Organism* organism, int x, int y) {
     }
 }
 
-
 // method to add human at specific position
 void City::addHuman(int x, int y) {
     if (isWithinBounds(x, y)) {
@@ -144,27 +143,48 @@ void City::zombieChaseHuman() {
     for (int i = 0; i < 20; ++i) {
         for (int j = 0; j < 20; ++j) {
             if (grid[i][j] == ZOMBIE_CH) {
-                bool nearHuman = false;
-                for (int x = -1; x <= 1; ++x) {
-                    for (int y = -1; y <= 1; ++y) {
-                        int checkX = i + x;
-                        int checkY = j + y;
-                        if (isWithinBounds(checkX, checkY) && grid[checkX][checkY] == HUMAN_CH) {
-                            nearHuman = true;
+                bool moved = false;
+                std::vector<std::pair<int, int>> humanCells;
+
+                //zombie range:
+                for (int x = -2; x <= 2; ++x) {
+                    for (int y = -2; y <= 2; ++y) {
+                        int newX = i + x;
+                        int newY = j + y;
+                        if (isWithinBounds(newX, newY) && grid[newX][newY] == HUMAN_CH) {
+                            humanCells.push_back(std::make_pair(newX, newY));
                         }
                     }
                 }
-                if (nearHuman) {
-                    int newX = i + (rand() % 3) - 1;
-                    int newY = j + (rand() % 3) - 1;
+
+                if (!humanCells.empty()) {
+                    // Choose a random human to convert
+                    std::pair<int, int> target = humanCells[rand() % humanCells.size()];
+                    grid[target.first][target.second] = ZOMBIE_CH; // Convert human to zombie
+                    delete organismGrid[target.first][target.second];
+                    organismGrid[target.first][target.second] = new Zombie(this, GRIDSIZE);
+                    humanCount--;
+                    zombieCount++;
+                    moved = true;
+                }
+
+                if (!moved) {
+                    // Perform random movement if no humans nearby
+                    int dir = rand() % 8;
+                    int newX = i + (dir == 0 ? -1 : dir == 1 ? 1 : 0);
+                    int newY = j + (dir == 2 ? -1 : dir == 3 ? 1 : 0);
                     if (isWithinBounds(newX, newY) && grid[newX][newY] == '-') {
-                        moveZombie(i, j, newX, newY);
+                        grid[newX][newY] = ZOMBIE_CH;
+                        grid[i][j] = '-';
+                        organismGrid[newX][newY] = organismGrid[i][j];
+                        organismGrid[i][j] = nullptr;
                     }
                 }
             }
         }
     }
 }
+
 
 // perform recruitment for all humans
 void City::recruitHumans() {

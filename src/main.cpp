@@ -4,19 +4,29 @@
 
 int main() {
     City city;
-    city.addHuman(5, 5);
-    city.addZombie(10, 10);
-    city.addHuman(15, 15);
-    city.addZombie(1, 1);
+    for (int i = 0; i < 100; ++i) { // Initialize 100 humans
+        int x, y;
+        do {
+            x = rand() % 20;
+            y = rand() % 20;
+        } while (city.getOrganism(x, y) != nullptr);
+        city.addHuman(x, y);
+    }
+    for (int i = 0; i < 5; ++i) { // Initialize 5 zombies
+        int x, y;
+        do {
+            x = rand() % 20;
+            y = rand() % 20;
+        } while (city.getOrganism(x, y) != nullptr);
+        city.addZombie(x, y);
+    }
 
     city.printRules();
-
-    // Print initial state
     std::cout << city;
     city.printStats();
 
-    // NOTE: set number of generations here
-    for (int i = 0; i < 30; ++i) {
+    // Simulation loop for at least 100 iterations or until extinction event
+    for (int i = 0; i < 100; ++i) {
         std::cout << "Starting generation " << i + 1 << std::endl;
         city.runFromZombies();
         city.zombieChaseHuman();
@@ -26,12 +36,17 @@ int main() {
         city.starveZombies();
         city.incrementGeneration();
 
-        std::cout << city; // Print city using overloaded operator
+        std::cout << city;
         city.printStats();
-
-        // pause execution to simulate time passage
         std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        if (city.getHumanCount() == 0 || city.getZombieCount() == 0) {
+            std::cout << "Extinction event occurred." << std::endl;
+            break;
+        }
     }
+
+    std::cout << "Simulation ended after " << city.getGeneration() << " generations." << std::endl;
 
     return 0;
 }

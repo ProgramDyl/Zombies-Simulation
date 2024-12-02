@@ -29,6 +29,11 @@ public:
     void resetMoveCounters();
     void displayGrid();
 
+    int getHumanCount() const { return humanCount; }
+    int getZombieCount() const { return zombieCount; }
+    int getGeneration() const { return generation; }
+
+
     Organism* getOrganism(int x, int y);
     void setOrganism(Organism* organism, int x, int y);
 
