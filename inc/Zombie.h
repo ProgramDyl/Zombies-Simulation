@@ -1,5 +1,5 @@
-#ifndef _ZOMBIE_H
-#define _ZOMBIE_H
+#ifndef ZOMBIE_H
+#define ZOMBIE_H
 
 #include "../inc/Organism.h"
 #include "../inc/GameSpecs.h"
@@ -12,15 +12,12 @@ private:
 public:
     Zombie();
     Zombie(City *city, int size);
-    virtual ~Zombie();
+    ~Zombie() override;
 
-    void turn() override; // Implement Zombie's turn logic
+    void turn() override; // inherited from pure virtual func. in Organism
+
     void move();
-
-    void breed();
-
     void breed() const;
-
     void starve();
 
     char getType() const override { return ZOMBIE_CH; }

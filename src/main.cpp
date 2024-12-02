@@ -1,3 +1,5 @@
+#include <chrono>
+#include <thread>
 #include "../inc/City.h"
 
 int main() {
@@ -7,12 +9,15 @@ int main() {
     city.addHuman(15, 15);
     city.addZombie(1, 1);
 
+    city.printRules();
+
     // Print initial state
-    city.print();
+    std::cout << city;
     city.printStats();
 
-    //NOTE: set num of generations here
-    for (int i = 0; i < 10; ++i) {
+    // NOTE: set number of generations here
+    for (int i = 0; i < 30; ++i) {
+        std::cout << "Starting generation " << i + 1 << std::endl;
         city.runFromZombies();
         city.zombieChaseHuman();
         city.randomMove();
@@ -20,8 +25,12 @@ int main() {
         city.convertHumans();
         city.starveZombies();
         city.incrementGeneration();
-        city.print(); // Print updated state after each step
-        city.printStats(); // Print statistics after each step
+
+        std::cout << city; // Print city using overloaded operator
+        city.printStats();
+
+        // pause execution to simulate time passage
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     return 0;

@@ -19,6 +19,7 @@ public:
     Organism();
     Organism(City *city, int size);
     virtual ~Organism();
+    //pure virtual
     virtual void turn() = 0;
 
     bool getMoved() const { return moved; }

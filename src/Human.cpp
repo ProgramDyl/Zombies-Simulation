@@ -29,6 +29,7 @@ void Human::move() {
             if (i == 0 && j == 0) continue; // skip the current cell
             int newX = x + i;
             int newY = y + j;
+            //ensures human can't go beyond grid boundaries
             if (newX >= 0 && newX < GRIDSIZE && newY >= 0 && newY < GRIDSIZE) {
                 adjacentCells.push_back(std::make_pair(newX, newY));
             }
@@ -55,7 +56,7 @@ void Human::move() {
 // recruit: logic for recruiting new humans into the grid
 void Human::recruit() {
     recruitCounter++;
-    if (recruitCounter >= 3) {
+    if (recruitCounter >= 5) {
         recruitCounter = 0;
         std::vector<std::pair<int, int>> emptyCells;
 
@@ -74,3 +75,4 @@ void Human::recruit() {
         }
     }
 }
+

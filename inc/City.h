@@ -10,7 +10,6 @@ public:
     City();
     void simulate();
     void print();
-
     void addHuman(int x, int y);
     void addZombie(int x, int y);
     void moveHuman(int oldX, int oldY, int newX, int newY);
@@ -32,6 +31,8 @@ public:
 
     Organism* getOrganism(int x, int y);
     void setOrganism(Organism* organism, int x, int y);
+
+    friend std::ostream& operator<<(std::ostream& os, const City& city);
 
 private:
     char grid[20][20];

@@ -4,24 +4,24 @@
 #include <vector>
 #include <cstdlib>
 
-// default constructor: initializes a zombie with default values and resets starve counter
+// default constructor
 Zombie::Zombie() : Organism(), starveCounter(0) {}
 
-// parameterized constructor: initializes a zombie with given city and size, resets starve counter
+// parameterized constructor
 Zombie::Zombie(City* city, const int size) : Organism(city, size), starveCounter(0) {}
 
-// destructor: cleans up resources used by zombie
+
 Zombie::~Zombie() {}
 
 // turn: defines what actions the zombie takes during its turn
 void Zombie::turn() {
-    if (!moved) move(); // move if not already moved
-    if (!moved) breed(); // attempt to breed if not moved
-    starve(); // check if the zombie should starve and be removed
-    moved = true; // mark as moved
+    if (!moved) move();
+    if (!moved) breed();
+    starve();
+    moved = true;
 }
 
-// move: logic to move the zombie to an adjacent human or empty cell
+// move the zombo to adjacent human or empty cell
 void Zombie::move() {
     std::vector<std::pair<int, int>> adjacentCells;
 
@@ -39,15 +39,21 @@ void Zombie::move() {
 
     std::vector<std::pair<int, int>> humanCells;
     for (const auto& cell : adjacentCells) {
-        if (city->getOrganism(cell.first, cell.second) != nullptr && city->getOrganism(cell.first, cell.second)->getType() == HUMAN_CH) {
+        if (city->getOrganism(cell.first, cell.second) != nullptr && city->
+            getOrganism(
+                cell.first,
+                cell.second)->getType() == HUMAN_CH) {
             humanCells.push_back(cell); // collect cells with humans
         }
     }
 
     if (!humanCells.empty()) {
         std::pair<int, int> target = humanCells[rand() % humanCells.size()];
-        city->setOrganism(this, target.first, target.second); // move to human cell and eat the human
-        city->setOrganism(nullptr, x, y);
+        // convert the human into a zombie
+        delete city->getOrganism(target.first, target.second); // remove the human
+        city->setOrganism(new Zombie(city, GRIDSIZE), target.first, target.second); // place new zombie
+        city->setOrganism(this, target.first, target.second); // move to the target cell
+        city->setOrganism(nullptr, x, y); // leave the current cell
         x = target.first;
         y = target.second;
         starveCounter = 0; // reset starve counter after eating
@@ -71,8 +77,10 @@ void Zombie::move() {
     moved = true; // mark as moved after moving
 }
 
+
+
 // breed: logic for converting humans into zombies
-void Zombie::breed() {
+void Zombie::breed() const {
     static int breedCounter = 0;
     breedCounter++;
     if (breedCounter >= 8) {
