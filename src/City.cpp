@@ -19,7 +19,7 @@ City::City() : generation(0), humanCount(0), zombieCount(0) {
     }
 
     // add init humans once
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 0; i < 100; ++i) {
         int x, y;
         do {
             x = rand() % 20;
@@ -28,7 +28,7 @@ City::City() : generation(0), humanCount(0), zombieCount(0) {
         addHuman(x, y);
     }
     // add init zombies once
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 0; i < 5; ++i) {
         int x, y;
         do {
             x = rand() % 20;
@@ -40,8 +40,9 @@ City::City() : generation(0), humanCount(0), zombieCount(0) {
 
 // check if coordinates are within bounds
 bool City::isWithinBounds(int x, int y) {
-    return x >= 0 && x < 20 && y >= 0 && y < 20;
+    return x >= 0 && x < GRIDSIZE && y >= 0 && y < GRIDSIZE;
 }
+
 
 // get organism at specific position
 Organism* City::getOrganism(int x, int y) {
@@ -79,6 +80,7 @@ void City::addZombie(int x, int y) {
 
 // move human from old position to new position
 void City::moveHuman(int oldX, int oldY, int newX, int newY) {
+
     if (isWithinBounds(newX, newY) && grid[oldX][oldY] == HUMAN_CH && grid[newX][newY] == '-') {
         grid[newX][newY] = HUMAN_CH;
         grid[oldX][oldY] = '-';
@@ -89,6 +91,7 @@ void City::moveHuman(int oldX, int oldY, int newX, int newY) {
 
 // move zombie from old position to new position
 void City::moveZombie(int oldX, int oldY, int newX, int newY) {
+    //looks at old position (if within bounds) and moves zombo from OLD to NEW.
     if (isWithinBounds(newX, newY) && grid[oldX][oldY] == ZOMBIE_CH && grid[newX][newY] == '-') {
         grid[newX][newY] = ZOMBIE_CH;
         grid[oldX][oldY] = '-';
@@ -105,7 +108,10 @@ void City::randomMove() {
         for (int j = 0; j < 20; ++j) {
             Organism* organism = getOrganism(i, j);
             if (organism != nullptr && !organism->getMoved()) {
-                organism->turn();
+                //random chance to move (TUNING)
+                if (rand() & 100 < 70) { //70%
+                    organism->turn();
+                }
             }
         }
     }
@@ -117,8 +123,9 @@ void City::runFromZombies() {
         for (int j = 0; j < 20; ++j) {
             if (grid[i][j] == HUMAN_CH) {
                 bool nearZombie = false;
-                for (int x = -1; x <= 1; ++x) {
-                    for (int y = -1; y <= 1; ++y) {
+                //zombo detection range
+                for (int x = -3; x <= 3; ++x) {
+                    for (int y = -3; y <= 3; ++y) {
                         int checkX = i + x;
                         int checkY = j + y;
                         if (isWithinBounds(checkX, checkY) && grid[checkX][checkY] == ZOMBIE_CH) {
@@ -147,8 +154,8 @@ void City::zombieChaseHuman() {
                 std::vector<std::pair<int, int>> humanCells;
 
                 //zombie range:
-                for (int x = -2; x <= 2; ++x) {
-                    for (int y = -2; y <= 2; ++y) {
+                for (int x = -1; x <= 1; ++x) {
+                    for (int y = -1; y <= 1; ++y) {
                         int newX = i + x;
                         int newY = j + y;
                         if (isWithinBounds(newX, newY) && grid[newX][newY] == HUMAN_CH) {
@@ -157,7 +164,7 @@ void City::zombieChaseHuman() {
                     }
                 }
 
-                if (!humanCells.empty()) {
+                if (!humanCells.empty() && (rand() & 100 < 50)) { //50% chance to convert!
                     // Choose a random human to convert
                     std::pair<int, int> target = humanCells[rand() % humanCells.size()];
                     grid[target.first][target.second] = ZOMBIE_CH; // Convert human to zombie
