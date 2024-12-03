@@ -240,7 +240,7 @@ void City::starveZombies() {
         for (int j = 0; j < 20; ++j) {
             if (grid[i][j] == ZOMBIE_CH) {
                 starvationCounter[i][j]++;
-                if (starvationCounter[i][j] >= 5) { // if zombie hasn't eaten for 5 turns
+                if (starvationCounter[i][j] >= 20) { ///ZOMBIE STARVE UNIT (testing)
                     std::cout << "Zombie at (" << i << ", " << j << ") starved" << std::endl;
                     grid[i][j] = '-'; // remove zombie
                     starvationCounter[i][j] = 0; // reset starvation counter
