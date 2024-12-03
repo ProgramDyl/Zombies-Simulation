@@ -77,13 +77,11 @@ void Zombie::move() {
     moved = true; // mark as moved after moving
 }
 
-
-
 // breed: logic for converting humans into zombies
 void Zombie::breed() const {
     static int breedCounter = 0;
     breedCounter++;
-    if (breedCounter >= 8) {
+    if (breedCounter >= 15) {
         breedCounter = 0;
         std::vector<std::pair<int, int>> humanCells;
 
@@ -111,7 +109,7 @@ void Zombie::breed() const {
 // starve: logic for removing starving zombies
 void Zombie::starve() {
     starveCounter++;
-    if (starveCounter >= 5) { //5 humans until extinct
+    if (starveCounter >= 20) { //5 humans until extinct
         city->setOrganism(nullptr, x, y); // remove starving zombie
     }
 }
